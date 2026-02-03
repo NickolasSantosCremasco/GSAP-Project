@@ -53,6 +53,17 @@ export default function Hero() {
             stagger: 0.06,
         }, "-=1.4")
 
+        gsap.timeline({
+            scrollTrigger: {
+                trigger: '#hero',
+                start:'top top',
+                end: 'bottom top',
+                scrub: true,
+            }
+        })
+        .to('.right-leaf', {y: 200}, 0)
+        .to('.left-leaf', {y:-200}, 0)
+
     }, { scope: containerRef });
 
     return (
@@ -86,7 +97,7 @@ export default function Hero() {
             {/* VÍDEO ALTERADO PARA FIXED */}
             <video 
                 ref={videoRef} 
-                src="/videos/input.mp4" 
+                src="/videos/output.mp4" 
                 // fixed faz o vídeo acompanhar o scroll sem precisar de pin no GSAP
                 className="fixed top-0 left-0 w-full h-full object-cover z-0 mix-blend-screen pointer-events-none"
                 muted 
