@@ -11,16 +11,16 @@ gsap.registerPlugin(ScrollTrigger, SplitText)
 export default function Hero() {
     const containerRef = useRef<HTMLElement>(null)
     const videoRef = useRef<HTMLVideoElement>(null)
-    const videoTimelineRef = useRef<gsap.core.Timeline | null>(null);
+    // Não precisamos necessariamente de um ref para a timeline se não formos pausá-la externamente, 
+    // mas é bom manter para limpeza se precisar.
 
     useGSAP(() => {
-        // Configuração dos Textos
+        // --- 1. Animações de Texto e Folhas (Mantive seu código original) ---
         const heroSplit = new SplitText('.title', { type: 'chars, words' })
         const paragraphSplit = new SplitText('.subtitle', { type: 'lines' })
 
         heroSplit.chars.forEach((char) => char.classList.add('text-gradient'))
 
-        // Animação de Entrada
         const tl = gsap.timeline();
         
         tl.from(heroSplit.chars, {
@@ -37,7 +37,6 @@ export default function Hero() {
             stagger: 0.06,
         }, "-=1.4")
 
-        // Animação das Folhas (Parallax)
         gsap.timeline({
             scrollTrigger: {
                 trigger: '#hero',
@@ -49,7 +48,18 @@ export default function Hero() {
         .to('.right-leaf', { y: 200 }, 0)
         .to('.left-leaf', { y: -200 }, 0)
 
-        // Animação do Vídeo (Responsivo)
+    }, { scope: containerRef });
+
+
+    // --- 2. Função para animar o Vídeo (Acionada quando o vídeo carrega) ---
+    const handleVideoLoad = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        // Remove o autoplay nativo para o GSAP assumir o controle
+        video.pause();
+        
+        // MatchMedia para responsividade (Adaptado do seu código)
         let mm = gsap.matchMedia();
 
         mm.add({
@@ -57,26 +67,28 @@ export default function Hero() {
             isDesktop: "(min-width: 768px)",
         }, (context) => {
             const isMobile = context.conditions?.isMobile;
-            
-            videoTimelineRef.current = gsap.timeline({
+
+            gsap.timeline({
                 scrollTrigger: {
-                    trigger: videoRef.current,
-                    start: isMobile ? 'top 50%' : 'center 60%',
-                    end: isMobile ? '120% top' : 'bottom top',
-                    scrub: true,
-                    pin: true,
+                    trigger: containerRef.current, // O gatilho é a seção Hero inteira
+                    start: "top top", // Começa quando o topo do Hero toca o topo da tela
+                    end: "bottom top", // Termina quando o fundo do Hero toca o topo da tela
+                    scrub: true, // O "scrub" é o que liga o scroll ao tempo do vídeo
+                    pin: false, // Se quiser que o vídeo fique fixo enquanto scrolla, mude para true
                 }
-            });
+            })
+            // A mágica acontece aqui: animamos o tempo atual (currentTime) do 0 até a duração total
+            .fromTo(video, 
+                { currentTime: 0 }, 
+                { currentTime: video.duration || 1, ease: "none" }
+            );
         });
-            
-    }, { scope: containerRef }); // Scope define o limite da animação
+    };
 
     return (
        <>
-        {/* 1. Section: relative para segurar o video, h-screen para altura total */}
         <section id="hero" className="noisy relative h-screen w-full overflow-hidden" ref={containerRef}>
             
-            {/* 2. Elementos de frente (Texto e Imagens): relative + z-10 */}
             <div className="relative z-10 overflow-hidden">
                 <h1 className="title">MOJITO</h1>
             </div>
@@ -86,34 +98,32 @@ export default function Hero() {
         
             <div className="body relative z-10">
                 <div className="content">
+                    {/* ... Seu conteúdo de texto ... */}
                     <div className="space-y-5 hidden md:block">
                         <p>Cool. Crisp. Classic</p>
                         <div className="overflow-hidden">
-                            <p className="subtitle">
-                                Sip the Spirit <br /> of Summer
-                            </p>
+                             <p className="subtitle">Sip the Spirit <br /> of Summer</p>
                         </div>
                     </div>
-
                     <div className="view-cocktails">
-                        <p className="subtitle">Every cocktail on our menu is a blend of premium ingredients, creative, flair, and timeless recipes - designed to delight your senses.</p>
+                        <p className="subtitle">Every cocktail on our menu...</p>
                         <a href="#cocktails">View Cocktails</a>
                     </div>
                 </div>
             </div>
 
-            {/* 3. Vídeo de Fundo: absolute + z-0 (atrás de tudo) */}
-            <div className="video absolute inset-0 z-0"> 
-                <video 
-                    ref={videoRef} 
-                    src="/videos/input.mp4"
-                    className="w-full h-full object-cover"
-                    muted 
-                    playsInline 
-                    autoPlay
-                    loop
-                />
-            </div>
+            {/* VÍDEO ATUALIZADO */}
+           <video 
+                ref={videoRef} 
+                // IMPORTANTE: Chama a função assim que os dados de duração carregam
+                onLoadedMetadata={handleVideoLoad}
+                src="/videos/input.mp4" // Veja a nota abaixo sobre o vídeo!
+                className="absolute top-0 left-0 w-full h-full object-cover z-0 mix-blend-screen"
+                muted 
+                playsInline 
+                preload="auto"
+                // Removemos o loop e autoPlay porque o ScrollTrigger vai controlar isso
+            />
         </section>
        </>
     )
