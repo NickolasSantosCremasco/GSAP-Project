@@ -88,7 +88,7 @@ export default function Hero() {
                         </div>
                     </div>
                     <div className="view-cocktails">
-                        <p className="subtitle">Every cocktail on our menu...</p>
+                        <p className="subtitle">Every cocktail on our menu is a blend of premium ingredients, creative flair, and timeless recipes -designed to delight your senses</p>
                         <a href="#cocktails">View Cocktails</a>
                     </div>
                 </div>
@@ -99,10 +99,11 @@ export default function Hero() {
                 ref={videoRef} 
                 src="/videos/output.mp4" 
                 // fixed faz o vídeo acompanhar o scroll sem precisar de pin no GSAP
-                className="fixed top-0 left-0 w-full h-full object-cover z-0 mix-blend-screen pointer-events-none"
+               className="fixed top-0 left-0 w-full h-full object-cover z-0 mix-blend-screen pointer-events-none"
                 muted 
                 playsInline 
                 preload="auto"
+                width={200}
             />
         </section>
     )
