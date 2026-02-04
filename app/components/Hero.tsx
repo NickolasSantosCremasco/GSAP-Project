@@ -13,26 +13,27 @@ export default function Hero() {
     const videoRef = useRef<HTMLVideoElement>(null)
 
     useGSAP(() => {
-        const video = videoRef.current;
-        if (!video) return;
+        const video = document.getElementById('global-drink-video') as HTMLVideoElement;
+    if (!video) return;
 
-        video.pause();
-        video.currentTime = 0;
+    video.pause();
+    video.currentTime = 0;
 
-        // Animação do vídeo: agora ele não trava a tela (sem pin)
-        // Ele vai animar enquanto você scrolla pelo container
-        gsap.to(video, {
-            scrollTrigger: {
-                trigger: containerRef.current,
-                start: "top top",
-                end: "bottom top", // Anima durante toda a altura da seção Hero
-                scrub: 1,
-                // pin: true removido para a página descer livremente
-            },
-            currentTime: video.duration || 5,
-            ease: "none"
-        });
-
+    gsap.to(video, {
+        scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: "bottom top", 
+            scrub: 1,
+            // Adicionamos isso para o vídeo sumir quando você passar para a seção "About"
+            onLeave: () => gsap.to(video, { opacity: 0, duration: 0.5 }),
+            onEnterBack: () => gsap.to(video, { opacity: 1, duration: 0.5 }),
+        },
+        y: 50, // Ajuste para a altura onde a taça deve ficar centralizada na Cocktails
+        currentTime: video.duration || 5,
+        ease: "none"
+    });
+        
         // Animações de Texto originais
         const heroSplit = new SplitText('.title', { type: 'chars, words' })
         const paragraphSplit = new SplitText('.subtitle', { type: 'lines' })
@@ -70,9 +71,9 @@ export default function Hero() {
         <section 
             id="hero" 
             ref={containerRef} 
-            className="noisy relative h-screen w-full overflow-hidden"
+            className="noisy z-50 relative h-screen w-full "
         >
-            <div className="relative z-10 overflow-hidden">
+            <div className="relative z-60 overflow-hidden">
                 <h1 className="title">MOJITO</h1>
             </div>
 
@@ -94,17 +95,7 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* VÍDEO ALTERADO PARA FIXED */}
-            <video 
-                ref={videoRef} 
-                src="/videos/output.mp4" 
-                // fixed faz o vídeo acompanhar o scroll sem precisar de pin no GSAP
-               className="fixed top-0 left-0 w-full h-full object-cover z-0 mix-blend-screen pointer-events-none"
-                muted 
-                playsInline 
-                preload="auto"
-                width={200}
-            />
+           
         </section>
     )
 }

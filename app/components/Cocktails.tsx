@@ -27,7 +27,7 @@ export default function Cocktails () {
     })
 
     return(
-        <section id="cocktails" className="noisy z-10">
+        <section id="cocktails" className="noisy relative z-10 bg-black">
            <img 
                 src="/images/cocktail-left-leaf.png" 
                 alt="l-leaf" 

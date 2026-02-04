@@ -34,7 +34,7 @@ export default function Navbar() {
         // 3. Mudamos para fixed, adicionamos z-index alto e width full
         <nav 
             ref={navContainer} 
-            className="fixed top-0 left-0 w-full z-50 flex justify-around items-center py-4 transition-all"
+            className="fixed z-50 top-0 left-0 w-full flex justify-around items-center py-4 transition-all"
         >
             <a href="#home" className="flex justify-center items-center gap-2">
                 <img src='/images/logo.png' alt="Logo" className="w-8 h-8"/> {/* Adicionei tamanho fixo pro logo */}
