@@ -28,12 +28,11 @@ export default function About() {
             .from(titleSplit.words, {
                 opacity: 0, 
                 duration: 1, 
-                y: 50, // Melhor que yPercent para textos curtos
+                y: 30, // Melhor que yPercent para textos curtos
                 ease: 'expo.out', 
                 stagger: 0.05
             })
-            // CORREÇÃO DOS SELETORES:
-            // Pegamos todos os filhos diretos (divs) do container do grid
+           
             .from('.grid-container > div', {
                 opacity: 0, 
                 y: 30,

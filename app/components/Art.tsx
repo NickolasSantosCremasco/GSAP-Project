@@ -10,20 +10,11 @@ export default function Art () {
     const container = useRef(null);
     useGSAP(() => {
         const mm = gsap.matchMedia();
-
-        mm.add({
-            // Definimos as condições de tela aqui
-            isDesktop: "(min-width: 768px)",
-            isMobile: "(max-width: 767px)"
-        }, (context) => {
-            // @ts-ignore
-            let { isDesktop, isMobile } = context.conditions;
-
             const maskTimeline = gsap.timeline({
                 scrollTrigger: {
                     trigger: '#art',
                    
-                    start: isMobile ? "top 20%" : "top top", 
+                    start:  "top top", 
                     end: 'bottom center',
                     scrub: 1.5,
                     pin: true,
@@ -31,10 +22,15 @@ export default function Art () {
             });
 
             // Adicione suas animações na timeline aqui
-            maskTimeline.to(".will-fade", { opacity: 1, stagger: 0.2, ease: 'power1.inOut' });
-
+            maskTimeline
+                
+                .to(".will-fade", { opacity: 0, stagger: 0.2, ease: 'power1.inOut' })
+                .to('.masked-img', {scale:1.3, maskPositoin: 'center', maskSize:'400%',
+                    duration:1, ease: 'power1.inOut'})
+                .to('#masked-content', {opacity:1, duration:1, ease:'power1.inOut'});
+                
             return () => {}; // Limpeza
-        }); // Limpeza automática 
+        
     }, { scope: container })
     return(
         <div id="art" ref={container}>

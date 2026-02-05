@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Cocktails from './components/Cocktails';
 import About from './components/About';
 import Art from './components/Art';
+import Menu from './components/Menu';
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
     <Cocktails />
     <About />
     <Art />
+    <Menu />
    </main>
     
   );
